@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --input-bg: #ffffff;
+    --border: #e2e8f0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* --- DARK MODE --- */
+body.dark-mode {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --input-bg: #334155;
+    --border: #475569;
+}
+
+/* Force text-muted visibility in Dark Mode */
+body.dark-mode .text-muted { color: #94a3b8 !important; }
+
+/* Card & Glass Styling */
+.card, .glass {
+    background-color: var(--card);
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+/* Gradient Banner */
+.bg-gradient {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+    color: #ffffff !important;
+}
+
+/* Stat Cards */
+.card.bg-primary { background-color: #4f46e5 !important; color: white !important; }
+.card.bg-success { background-color: #10b981 !important; color: white !important; }
+.card.bg-info { background-color: #0ea5e9 !important; color: white !important; }
+
+/* FIX: Pending Card - Darker Orange + White Text */
+.card.bg-warning {
+    background-color: #ea580c !important; /* Dark Orange */
+    color: #ffffff !important; /* White Text */
+}
+/* Ensure headings are also white */
+.card.bg-warning h6, .card.bg-warning h2 {
+    color: #ffffff !important;
+}
+
+/* Danger Zone Styling */
+.danger-zone {
+    border: 1px solid #fca5a5 !important;
+}
+body.dark-mode .danger-zone {
+    border: 1px solid #991b1b !important;
+    background-color: rgba(127, 29, 29, 0.1) !important;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, #4f46e5, #1e293b) !important;
+}
+
+/* Task Badges */
+.badge-pill-custom {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* CRITICAL FIX: Form Inputs in Dark Mode */
+body.dark-mode .form-control, 
+body.dark-mode .form-select {
+    background-color: #334155 !important; /* Darker background */
+    border-color: #475569 !important;
+    color: #ffffff !important; /* White text for typing */
+}
+
+/* Placeholder text color */
+body.dark-mode .form-control::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1;
+}
+
+/* Profile Avatar */
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    margin: 0 auto;
+    border: 4px solid #fff;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Footer */
+.footer {
+    background-color: var(--card);
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+body.dark-mode .footer {
+    border-top: 1px solid #334155;
+}

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tasks | TaskFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/dashboard"><i class="fas fa-layer-group me-2"></i>TaskFlow</a>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Dark Mode -->
+                <div class="form-check form-switch mb-0">
+                    <input class="form-check-input" type="checkbox" role="switch" id="darkModeToggle" onchange="toggleDarkMode()">
+                    <label class="form-check-label" for="darkModeToggle"><i class="fas fa-moon text-white"></i></label>
+                </div>
+                
+                <!-- Nav Links -->
+                <a href="/profile" class="btn btn-light btn-sm rounded-circle fw-bold" title="Profile"><%= user.name.charAt(0) %></a>
+                <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">My Tasks</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal"><i class="fas fa-plus me-2"></i>Add Task</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="glass p-3 rounded-xl mb-4">
+            <form action="/tasks" method="GET" class="row g-2">
+                <div class="col-md-4">
+                    <input type="text" name="search" placeholder="Search tasks..." class="form-control" value="<%= query.search || '' %>">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="All">All Status</option>
+                        <option value="Pending" <%= query.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+                        <option value="Completed" <%= query.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select">
+                        <option value="All">All Categories</option>
+                        <option value="Work" <%= query.category === 'Work' ? 'selected' : '' %>>Work</option>
+                        <option value="Personal" <%= query.category === 'Personal' ? 'selected' : '' %>>Personal</option>
+                        <option value="Study" <%= query.category === 'Study' ? 'selected' : '' %>>Study</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Task List -->
+        <div class="row">
+            <% if (tasks.length > 0) { %>
+                <% tasks.forEach(task => { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card task-card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-info bg-opacity-10 text-info"><%= task.category %></span>
+                                    <span class="badge <%= task.priority === 'High' ? 'bg-danger' : task.priority === 'Medium' ? 'bg-primary' : 'bg-secondary' %>"><%= task.priority %></span>
+                                </div>
+                                <h5 class="card-title mt-2 <%= task.status === 'Completed' ? 'text-decoration-line-through text-muted' : '' %>"><%= task.title %></h5>
+                                <p class="card-text text-muted small mt-2"><%= task.description || 'No description' %></p>
+                                
+                                <!-- Timestamps Section -->
+                                <div class="mt-3 pt-2 border-top">
+                                    <small class="text-muted d-block">
+                                        <i class="far fa-calendar me-1"></i> Created: <%= new Date(task.createdAt).toLocaleDateString() %>
+                                    </small>
+                                    <% if (task.dueDate) { %>
+                                        <small class="text-primary d-block">
+                                            <i class="far fa-clock me-1"></i> Due: <%= new Date(task.dueDate).toLocaleString() %>
+                                        </small>
+                                    <% } %>
+                                    <% if (task.status === 'Completed') { %>
+                                        <small class="text-success d-block">
+                                            <i class="fas fa-check-circle me-1"></i> Finished: <%= new Date(task.updatedAt).toLocaleString() %>
+                                        </small>
+                                    <% } %>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="card-footer bg-transparent border-top-0 d-flex justify-content-between align-items-center py-3">
+                                <div class="d-flex gap-2">
+                                    <!-- Edit Button -->
+                                    <a href="/task/edit/<%= task._id %>" class="btn btn-sm btn-outline-primary" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <!-- Complete Button -->
+                                    <form action="/task/update/<%= task._id %>?_method=PUT" method="POST">
+                                        <button type="submit" class="btn btn-sm <%= task.status === 'Pending' ? 'btn-outline-success' : 'btn-outline-secondary' %>">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                    <!-- Delete Button -->
+                                    <form action="/task/delete/<%= task._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this task?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                    </form>
+                                </div>
+                                <span class="badge <%= task.status === 'Completed' ? 'bg-success' : 'bg-warning text-dark' %>"><%= task.status %></span>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted opacity-25 mb-3"></i>
+                    <p class="text-muted">No tasks found. Create one!</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content border-0">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Task</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/task/add" method="POST">
+                        <div class="mb-3">
+                            <label>Task Title</label>
+                            <input type="text" name="title" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label>Priority</label>
+                                <select name="priority" class="form-select">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label>Category</label>
+                                <select name="category" class="form-select">
+                                    <option value="Work">Work</option>
+                                    <option value="Personal">Personal</option>
+                                    <option value="Study">Study</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label>Due Date & Time</label>
+                            <input type="datetime-local" name="dueDate" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Save Task</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

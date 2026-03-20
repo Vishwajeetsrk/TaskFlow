@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | TaskFlow</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">
+            <i class="fas fa-layer-group me-2"></i>TaskFlow
+        </a>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <a href="/about" class="text-white text-decoration-none d-none d-md-block small">About</a>
+            <a href="/contact" class="text-white text-decoration-none d-none d-md-block small">Contact</a>
+
+            <!-- Dark Mode -->
+            <div class="form-check form-switch mb-0">
+                <input class="form-check-input" type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                <label class="form-check-label">
+                    <i class="fas fa-moon text-white"></i>
+                </label>
+            </div>
+
+            <!-- User -->
+            <a href="/profile" class="text-white d-none d-md-block"><i class="fas fa-user"></i></a>
+            <a href="/settings" class="text-white"><i class="fas fa-cog"></i></a>
+
+            <span class="text-white d-none d-sm-block">
+                Hello, <strong><%= user.name %></strong>
+            </span>
+
+            <a href="/logout" class="btn btn-light btn-sm">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ================= MAIN ================= -->
+<div class="container py-4">
+
+    <!-- ===== GAMIFICATION BANNER ===== -->
+    <div class="glass rounded-2xl p-4 mb-4 bg-gradient text-white d-flex justify-content-between align-items-center shadow-lg">
+
+        <div>
+            <h5 class="mb-1 opacity-75">Your Progress</h5>
+
+            <span class="fs-4 fw-bold">
+                <i class="fas fa-trophy me-2"></i>
+                <%= user.points %> Points
+            </span>
+        </div>
+
+        <!-- Image -->
+        <img src="https://media.tenor.com/XbovdtbA5mcAAAAm/direct-hit-joypixels.webp"
+             style="width:80px;height:80px;object-fit:contain;opacity:0.9;">
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="row mb-4">
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-primary text-white border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Total Tasks</h6>
+                    <h2><%= stats.total %></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-success text-white border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Completed</h6>
+                    <h2><%= stats.completed %></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-warning text-dark border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Pending</h6>
+                    <h2><%= stats.pending %></h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-info text-white border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Progress</h6>
+
+                    <div class="progress mt-2" style="height:8px;background:rgba(255,255,255,0.3);">
+                        <div class="progress-bar bg-white"
+                             style="width:<%= stats.total>0 ? Math.round((stats.completed/stats.total)*100):0 %>%">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== CONTENT ===== -->
+    <div class="row">
+
+        <!-- LEFT -->
+        <div class="col-lg-8 mb-4">
+
+            <!-- AI Suggestion -->
+            <div class="glass p-4 mb-4 border-start border-4 border-primary shadow-sm">
+                <div class="d-flex align-items-center mb-2">
+                    <span class="fs-4 me-2">🤖</span>
+                    <h5 class="mb-0 text-primary fw-bold">AI Suggestion</h5>
+                </div>
+
+                <p>
+                    Start with: <strong>"<%= aiTask %>"</strong>
+                </p>
+
+                <form action="/task/add" method="POST">
+                    <input type="hidden" name="title" value="<%= aiTask %>">
+                    <button class="btn btn-primary btn-sm">Add +10 pts</button>
+                </form>
+            </div>
+
+            <!-- Recent Tasks -->
+            <div class="glass shadow-sm">
+
+                <div class="p-3 border-bottom d-flex justify-content-between">
+                    <h5><i class="fas fa-stream me-2 text-primary"></i>Recent Activity</h5>
+                    <a href="/tasks" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+
+                <div class="list-group list-group-flush">
+
+                    <% if (tasks.length > 0) { %>
+
+                        <% tasks.forEach(task => { %>
+
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+
+                            <div>
+                                <strong><%= task.title %></strong>
+
+                                <div class="mt-1 d-flex gap-2 flex-wrap">
+
+                                    <span class="badge bg-info bg-opacity-10 text-info">
+                                        <%= task.category %>
+                                    </span>
+
+                                    <span class="badge <%= task.priority === 'High'
+                                        ? 'bg-danger bg-opacity-10 text-danger'
+                                        : 'bg-secondary bg-opacity-10 text-secondary' %>">
+                                        <%= task.priority %>
+                                    </span>
+
+                                    <% if (task.dueDate) { %>
+                                    <small class="text-muted">
+                                        <i class="far fa-clock"></i>
+                                        <%= new Date(task.dueDate).toLocaleString() %>
+                                    </small>
+                                    <% } %>
+
+                                </div>
+                            </div>
+
+                            <span class="badge <%= task.status === 'Completed'
+                                ? 'bg-success'
+                                : 'bg-warning text-dark' %>">
+                                <%= task.status %>
+                            </span>
+
+                        </div>
+
+                        <% }) %>
+
+                    <% } else { %>
+
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            No tasks yet!
+                        </div>
+
+                    <% } %>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-4">
+
+            <div class="glass p-4 shadow-sm">
+
+                <h5 class="mb-3">
+                    <i class="fas fa-plus-circle me-2 text-primary"></i>Quick Add Task
+                </h5>
+
+                <form action="/task/add" method="POST">
+
+                    <input type="text" name="title" class="form-control mb-3" placeholder="Task Title" required>
+
+                    <textarea name="description" class="form-control mb-3" placeholder="Description"></textarea>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <select name="priority" class="form-select">
+                                <option>Low</option>
+                                <option selected>Medium</option>
+                                <option>High</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <select name="category" class="form-select">
+                                <option>Work</option>
+                                <option>Personal</option>
+                                <option>Study</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <input type="datetime-local" name="dueDate" class="form-control mb-3">
+
+                    <button class="btn btn-primary w-100">
+                        <i class="fas fa-plus me-2"></i>Add Task
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer py-4 text-center">
+    <div class="container">
+
+        <div class="d-flex justify-content-center gap-3 mb-2">
+            <a href="/about" class="text-muted">About</a>
+            <a href="/contact" class="text-muted">Contact</a>
+        </div>
+
+        <small class="text-muted">© 2026 TaskFlow</small>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/main.js"></script>
+
+</body>
+</html>
