@@ -2,10 +2,10 @@
 
 A modern, full-stack **Task Management Web Application** built with **Node.js, Express, and MongoDB**. Designed as a **Final Year BCA Project**, TaskFlow features a professional SaaS-style dashboard, secure authentication, gamification system, and a fully responsive UI with Dark Mode.
 
-![GitHub last commit](https://img.shields.io/github/last-commit/Vishwajeetsrk/TaskFlow?style=for-the-badge&color=blue)
-![GitHub repo size](https://img.shields.io/github/repo-size/Vishwajeetsrk/TaskFlow?style=for-the-badge&color=green)
-![GitHub stars](https://img.shields.io/github/stars/Vishwajeetsrk/TaskFlow?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/Vishwajeetsrk/TaskFlow?style=for-the-badge)
+![Last Commit](https://img.shields.io/badge/Last%20Commit-2026--03--20-blue?style=for-the-badge)
+![Repo Size](https://img.shields.io/badge/Repo%20Size-View-green?style=for-the-badge)
+[![Stars](https://img.shields.io/github/stars/Vishwajeetsrk/TaskFlow.svg?style=for-the-badge)](https://github.com/Vishwajeetsrk/TaskFlow/stargazers)
+[![Forks](https://img.shields.io/github/forks/Vishwajeetsrk/TaskFlow.svg?style=for-the-badge)](https://github.com/Vishwajeetsrk/TaskFlow/network/members)
 
 ---
 
