@@ -9,8 +9,7 @@ const path = require('path');
 const app = express();
 
 // Database Connection
-const mongoURI = process.env.DATABASE_URL || process.env.MONGODB_URI || 'mongodb://localhost:27017/taskflow';
-mongoose.connect(mongoURI)
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('✅ MongoDB Connected'))
     .catch(err => console.log('❌ DB Error:', err));
 
@@ -25,21 +24,21 @@ app.set('view engine', 'ejs');
 
 // Session Configuration
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'fallback-secret-key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: mongoURI }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
-const userRoutes = require('./routes/userRoutes'); // <--- ADD THIS
+const userRoutes = require('./routes/userRoutes');
 
 app.use('/', authRoutes);
 app.use('/', taskRoutes);
-app.use('/', userRoutes); // <--- ADD THIS
+app.use('/', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
